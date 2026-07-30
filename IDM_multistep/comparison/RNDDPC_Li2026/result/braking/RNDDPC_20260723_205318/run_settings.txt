@@ -1,0 +1,21 @@
+timestamp: 2026-07-23 20:53:20
+scenario: braking
+control_method: RNDDPC
+Nfut: 5
+SDES: 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+subplatoon_config: [2, 3, 1, 4, 2]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\from_server\IDM_multistep\vehicle_parameters.csv
+time_varying: True
+weights: {'spacing': 2.5, 'velocity': 1.5, 'control': 20.0, 'delta_u_penalty': 30.0, 'spacing_low_penalty': 200.0, 'terminal_spacing_penalty': 1000.0}
+koopman_lifting: {'with_history': True, 'checkpoints': ['2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5', '2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5', '2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5', '2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5', '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5']}
+constraints: {'spacing': 'tightened with RNDDPC reachable tube and softened by slack', 'velocity': 'tightened with RNDDPC reachable tube and softened by slack', 'terminal_velocity': 'soft equality with slack', 'acceleration': [-6.0, 4.0]}
+slack_weights: {'W_SLACK': 10000.0, 'W_SLACK_L2': 100.0}
+rnddpc_uncertainty: {'EPS_MAX': 0.2, 'Q_COVER': 0.9, 'SIGMA_SCALE': 0.01, 'RCOND_PINV': 0.01, 'EP_EXTRAPOLATE': True, 'TUBE_MODE': 'paper_conic', 'CONIC_SOLVER': 'CLARABEL', 'MZ_KEEP_GENERATORS': 999, 'MZ_GENERATOR_COUNTS': [{'D_full': 3600, 'D_reduced': 48, 'Zp_full': 3600, 'Zp_reduced': 44}, {'D_full': 3600, 'D_reduced': 68, 'Zp_full': 3600, 'Zp_reduced': 64}, {'D_full': 3600, 'D_reduced': 28, 'Zp_full': 3600, 'Zp_reduced': 24}, {'D_full': 3600, 'D_reduced': 88, 'Zp_full': 3600, 'Zp_reduced': 84}, {'D_full': 3600, 'D_reduced': 48, 'Zp_full': 3600, 'Zp_reduced': 44}]}
+data_collection: {'rollouts': 30, 'rollout_len': 120, 'noise': 0.03, 'seed': 0, 'vbase_range': [10.0, 30.0], 'head_velocity_range': [10.0, 30.0], 'head_random_walk_std': 0.8, 'cav_pe_std': 1.5, 'idm_params': 'vehicle_parameters.csv slices per subplatoon'}
+cutin_time: 8.0
+cutin_drop: 25.0
+output_dir: result\braking\RNDDPC_20260723_205318
+sim_maxtime: 0.0

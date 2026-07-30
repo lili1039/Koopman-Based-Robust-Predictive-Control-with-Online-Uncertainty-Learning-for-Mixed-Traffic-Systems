@@ -1,0 +1,19 @@
+timestamp: 2026-07-21 19:38:16
+scenario: tracking
+control_method: Distributed DeePC
+time_varying: True
+T: 500
+Tini: 50
+N: 15
+kappa: 436
+SDES(期望/平衡间距): 40.0
+Spa[min,max]: [10, 80]
+Acc[min,max]: [-6, 4]
+subplatoon_config: [2, 3, 1, 4, 2]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\from_server\IDM_multistep\vehicle_parameters.csv
+data_file: precollected_data_tracking_2-3-1-4-2_T500_N15
+deepc_weights: {'weight_s': 5, 'weight_v': 1.5, 'weight_u': 20.0, 'lambda_gi': 100, 'lambda_yi': 100000.0, 'rho': 1}
+max_iteration: 1000
+result_root: result
+run_suffix: _20260721_193816
+output_dir: result\tracking\Distributed_DeePC_20260721_193816

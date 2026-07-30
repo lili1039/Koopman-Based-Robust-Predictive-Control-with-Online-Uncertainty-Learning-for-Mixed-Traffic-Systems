@@ -1,0 +1,8 @@
+metric,value
+RMSVE,3.0092553379956914
+RMSSE,11.177636331666045
+AvgControlTime_s,0.0045468282872352045
+dec_q_spa,2.5
+dec_q_vel,1.5
+dec_r,20.0
+dec_rd,30.0

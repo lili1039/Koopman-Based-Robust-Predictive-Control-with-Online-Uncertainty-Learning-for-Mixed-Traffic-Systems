@@ -1,0 +1,16 @@
+timestamp: 2026-07-21 17:07:11
+scenario: tracking
+control_method: Decentralized single MPC
+time_varying: True
+Nfut: 15
+Npst: 50
+SDES(期望/平衡间距): 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\from_server\IDM_multistep\vehicle_parameters.csv
+subplatoon_config: [2, 3, 1, 4, 2]
+mpc_weights: {'dec_q_spa': 2.5, 'dec_q_vel': 1.5, 'dec_r': 20.0, 'dec_rd': 30.0}
+result_root: result
+run_suffix: _20260721_170711
+output_dir: result\tracking\Decentralized_single_MPC_20260721_170711

@@ -1,0 +1,31 @@
+timestamp: 2026-07-27 00:40:47
+scenario: tracking
+control_method: Distributed MPC
+disturbance_estimate: True
+disturbance_update_method: refit
+time_varying: True
+Nfut: 15
+Npst: 50
+SDES(期望/平衡间距): 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+cutin_time: 8.0
+cutin_drop: 25.0
+lam: 0.7
+N_point: 20
+corr_threads: 8
+ep_window: 20
+vehicle_csv: vehicle_parameters.csv
+signal_delay: True
+delay_step_windows: 120-124,320-324,520-524,720-724,920-924,1120-1124,1320-1324,1520-1524,1720-1724,1920-1924
+delay_hdvs: 2:1,4:2
+enable_slack: False
+save_slack: False
+verbose_step: True
+save_plots: True
+mpc_weights: {'dec_q_spa': 2.5, 'dec_q_vel': 1.5, 'dec_qa_spa': 0.0, 'dec_qa_vel': 0.0, 'dec_r': 20.0, 'dec_rd': 30.0, 'dist_q1_spa': 0.125, 'dist_q1_vel': 0.1, 'dist_q2_spa': 0.125, 'dist_q2_vel': 0.1, 'dist_qa_spa': 0.125, 'dist_qa_vel': 0.5, 'dist_q4_spa': 0.125, 'dist_q4_vel': 1.0, 'dist_r': 20.0, 'dist_rd': 30.0, 'dist_term_refs': 'weighted'}
+subplatoon_config: [(2, '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5'), (3, '2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5'), (1, '2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5'), (4, '2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5'), (2, '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5')]
+result_root: 202606_result
+run_suffix: _delayed
+output_dir: 202606_result\tracking\Distributed_MPC_delayed

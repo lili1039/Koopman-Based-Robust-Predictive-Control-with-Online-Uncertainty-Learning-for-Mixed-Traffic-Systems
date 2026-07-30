@@ -1,0 +1,6 @@
+Deep_Koop_v1/
+__pycache__/
+IDM_multistep/Koopman_MPC_IDM_learning_set.py
+IDM_multistep/_heter_helperfuns_torch_IDM_learning_set.py
+training_code/Heter_HDV_HighD/
+Zonosets_and_preparations/_5_multi_step/error_points_multistep/
