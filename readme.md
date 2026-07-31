@@ -7,8 +7,8 @@
 
 > **Code availability.** This repository is an initial public snapshot. The main training and control source code has not been uploaded yet. We will release the full main training and control code after the paper is accepted.
 > 
-| <img src="IDM_multistep/figures%20for%20paper/mixed-traffic-flow.png" alt="Mixed traffic flow scenario" width="100%"> 
-<img src="IDM_multistep/figures%20for%20paper/network-architecture.png" alt="Network architecture" width="100%"> |
+<img src="IDM_multistep/figures%20for%20paper/mixed-traffic-flow.png" alt="Mixed traffic flow scenario" width="100%"> 
+<img src="IDM_multistep/figures%20for%20paper/network-architecture.png" alt="Network architecture" width="100%">
 
 ## Repository Structure
 
