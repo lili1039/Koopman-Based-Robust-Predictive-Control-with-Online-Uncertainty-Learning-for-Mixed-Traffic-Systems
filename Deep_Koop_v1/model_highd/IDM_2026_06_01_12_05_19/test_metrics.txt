@@ -1,0 +1,6 @@
+best_model_path: N/A (calibrated IDM, no model checkpoint)
+num_samples: 99841
+RMSE_vel: 0.7431448101997375
+RMSE_spa: 0.5240364074707031
+MAPE_vel: 2.626495599746704
+MAPE_spa: 1.760908603668213

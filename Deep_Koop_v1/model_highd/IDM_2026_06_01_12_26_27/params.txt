@@ -1,0 +1,7 @@
+IDM_params: [31.63398677, 0.8485575, 0.35958698, 0.39194875, 2.89009438, 3.4968872]
+num_HDV: 4
+Npst: 50
+Nfut: 15
+dt: 0.12
+data_path: D:\0liliPersonal\Code_for_Research_2\from_server\HighDDatasets\highd_traj_1985_4HDV_u4f.pkl
+random_state: 42

@@ -1,0 +1,46 @@
+Current_filename: _2_heter_helperfuns_highd.py
+Time_step: 0.12
+is_train: True
+num_CAV: 1
+num_HDV: 3
+s_dim: 8
+u_dim: 1
+ep_dim: 1
+style_dim: 16
+lift_dim: 24
+encoder_widths: [56, 96, 128, 24]
+eact_type: ['relu', 'relu', 'relu']
+temporal_module: lstm
+style_pooling: last
+HV_hist_slice_dim: 3
+LSTM_output_dim: 24
+transformer_d_model: 24
+transformer_nhead: 4
+transformer_num_layers: 2
+transformer_ff: 64
+decoder_widths: [32, 8]
+Nfut: 15
+Npst: 50
+state_weight: [1 1 1 1 1 1 1 1]
+linear_lam: 1
+L2_lam: 0.0001
+recon_lam: 1
+Linf_lam: 0.0001
+predict_lam: 2
+opt_alg: adam
+batch_size: 128
+learning_rate: 0.001
+decay_rate: 0.97
+keep_prob: 0.8
+epochs: 1000
+patience: 8
+lr_step_size: 1
+project_path: /root/HK-RPC
+path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_22_51_51
+model_repo_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_22_51_51/past_models
+model_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_22_51_51/model.weights.h5
+loss_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_22_51_51/loss.csv
+params_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_22_51_51/params.txt
+data_path: /root/HK-RPC/HighDDatasets/highd_traj_3034_3HDV_u4f.pkl
+eval_model_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_05_28_12_26/past_models/model_epoch_98.weights.h5
+num_veh: 4

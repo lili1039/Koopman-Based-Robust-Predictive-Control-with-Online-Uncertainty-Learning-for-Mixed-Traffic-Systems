@@ -1,0 +1,6 @@
+best_model_path: /root/HK-RPC/Deep_Koop_v1/model_highd/2026_06_01_15_12_58/past_models/model_epoch_136.weights.h5
+num_samples: 53496
+RMSE_vel: 0.4490208625793457
+RMSE_spa: 0.4024795889854431
+MAPE_vel: 7.158697605133057
+MAPE_spa: 2.510319948196411
