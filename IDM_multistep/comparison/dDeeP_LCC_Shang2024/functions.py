@@ -57,6 +57,8 @@ def _env_int_list(name, default):
 
 
 scenario = os.environ.get('KMPC_SCENARIO', 'braking')
+if scenario not in ('tracking', 'braking'):
+    raise ValueError('KMPC_SCENARIO must be tracking or braking.')
 subplatoon_spec = _env_int_list('KMPC_SUBPLATOON', [2, 3, 1, 4, 2])
 layout_slug = '-'.join(str(x) for x in subplatoon_spec)
 vehicle_csv = os.environ.get('KMPC_VEHICLE_CSV', 'vehicle_parameters.csv')
@@ -97,20 +99,12 @@ reg_pinv = _env_float('DDEEPC_REG_PINV', 1e-4)     # small Tikhonov regularisati
                     # pseudo-inverse g = H^T (H H^T + reg_pinv*I)^{-1} b.
 
 # parameters
-if scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
-    lambda_gi       = 100   # 100
-    lambda_yi       = 1e5   # penalty on ||sigma_y||_2^2 in objective 1e5
-elif scenario == 'stabilization':
-    lambda_gi       = 200
-    lambda_yi       = 2*1e5   # penalty on ||sigma_y||_2^2 in objective 1e4
+lambda_gi       = 100   # 100
+lambda_yi       = 1e5   # penalty on ||sigma_y||_2^2 in objective 1e5
 
 weight_s = _env_float('KMPC_DEC_Q_SPA', 5.0)
 weight_v = _env_float('KMPC_DEC_Q_VEL', 1.5)
 weight_u = _env_float('KMPC_DEC_R', 20.0)
-if scenario == 'stabilization':
-    weight_s = _env_float('DDEEPC_STAB_Q_SPA', 1.0)
-    weight_v = _env_float('DDEEPC_STAB_Q_VEL', 2.0)
-    weight_u = _env_float('DDEEPC_STAB_R', 12.5)
 
 data_file = os.environ.get('DDEEPC_DATA_DIR', f'precollected_data_{scenario}_{layout_slug}_idm_input_T{T}_N{N}')
 
@@ -233,22 +227,6 @@ def generate_NEDC_velocity_profile(Tstep=0.12):
 
     return time, vel
 
-def generate_sine_velocity_profile(Tstep=0.12):
-    total_time = 180     # seconds
-    time = np.arange(0, total_time, Tstep)
-    vel = np.zeros_like(time)
-
-    # Sine-wave parameters.
-    center = 25         # Center speed: 25 m/s.
-    amplitude = 3       # Oscillation range: +/-5 m/s.
-    periods = 4         # Four complete sine waves.
-    omega = 2 * np.pi * periods / total_time   # Angular frequency.
-
-    # Generate the sine curve.
-    for idx, t in enumerate(time):
-        vel[idx] = center + amplitude * np.sin(omega * t)
-
-    return time, vel
 
 def generate_braking_velocity_profile(Tstep=0.12):
     """
@@ -292,35 +270,6 @@ def generate_braking_velocity_profile(Tstep=0.12):
 
     return time, vel
 
-def generate_cutin_velocity_profile(Tstep=0.12, cutin_time=8.0):
-    """
-    Cut-in scenario with the same velocity profile as Koopman_MPC_IDM_learning_set.py.
-    The position jump is injected in the main loop.
-    """
-    v_const = 20.0
-    total_time = 80.0
-    accel_dur = 3.0
-    a_accel = 2.0
-    a_brake = -5.0
-    v_low = 8.0
-
-    t_accel = cutin_time - accel_dur
-    v_peak = v_const + a_accel * accel_dur
-    t_brake = (v_peak - v_low) / (-a_brake)
-    t_brake_end = cutin_time + t_brake
-
-    time = np.arange(0, total_time, Tstep)
-    vel = np.empty_like(time)
-    for idx, t in enumerate(time):
-        if t < t_accel:
-            vel[idx] = v_const
-        elif t < cutin_time:
-            vel[idx] = v_const + a_accel * (t - t_accel)
-        elif t < t_brake_end:
-            vel[idx] = v_peak + a_brake * (t - cutin_time)
-        else:
-            vel[idx] = v_low
-    return time, vel
 
 
 # =============================================================================
@@ -430,10 +379,6 @@ def init_sub(scenario):
         time_list, PV_vel = generate_NEDC_velocity_profile(Tstep)
     elif scenario == 'braking':
         time_list, PV_vel = generate_braking_velocity_profile(Tstep)
-    elif scenario == 'stabilization':
-        time_list, PV_vel = generate_sine_velocity_profile(Tstep)
-    elif scenario == 'cutin':
-        time_list, PV_vel = generate_cutin_velocity_profile(Tstep, cutin_time=8.0)
     total_time_steps = len(time_list)
     sim_maxtime = _env_float('KMPC_SIM_MAXTIME', 0.0)
     if sim_maxtime > 0:
@@ -600,10 +545,6 @@ def data_collection():
         v_init = 70/3.6
     elif scenario == 'braking':
         v_init = 20
-    elif scenario == 'stabilization':
-        v_init = 25
-    elif scenario == 'cutin':
-        v_init = 20
 
     S = np.zeros([T,n_vehicle+1,3])
     S[0,0,0] = 0
@@ -688,18 +629,15 @@ def compute_spacing_from_position(S):
     spacing[:, 1:] = pos[:, :-1] - pos[:, 1:]
     return spacing
 
-def compute_tracking_metrics(S, scenario, sdes=40.0, vdes_stab=25.0):
+def compute_tracking_metrics(S, scenario, sdes=40.0):
     """Match the Koopman baseline: exclude the PV and compute RMSVE/RMSSE over the supplied time window."""
     vel = S[:, :, 1]
     spacing = compute_spacing_from_position(S)
     vel_eval = vel[:, 1:]
     spacing_eval = spacing[:, 1:]
 
-    if scenario == 'stabilization':
-        vel_err = vel_eval - vdes_stab
-    else:
-        vdes = vel[:, 0]
-        vel_err = vel_eval - vdes[:, None]
+    vdes = vel[:, 0]
+    vel_err = vel_eval - vdes[:, None]
 
     rmsve = float(np.sqrt(np.mean(vel_err ** 2)))
     rmsse = float(np.sqrt(np.mean((spacing_eval - sdes) ** 2)))
@@ -762,10 +700,6 @@ def plot(scenario, S, Tstep, sim_subplatoon_num, file, sub_numHDV_list=None):
                 plt.ylim(5,35)
             elif scenario == 'braking':
                 plt.ylim(0,40)
-            elif scenario == 'stabilization':
-                plt.ylim(15,35)
-            elif scenario == 'cutin':
-                plt.ylim(0,30)
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(f'{file}/plot_{state_name}.png')

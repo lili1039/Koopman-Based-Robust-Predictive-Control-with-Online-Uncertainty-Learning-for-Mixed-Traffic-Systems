@@ -1,0 +1,12 @@
+metric,value
+mode,online
+scenario,cutin
+completed,1
+step_seconds,0.12
+history_steps,50
+last_valid_step,666
+cutin_time_s,10.08
+SlackEnabled,0
+TimingValid,1
+failure_status,
+failure_reason,

@@ -1,0 +1,23 @@
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+Using device: cpu
+Disturbance set / constraint tightening: ON
+Soft constraints / slack in optimization: OFF
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=2: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5
+        multi-step matrices step1..15: G0(22, 22) Gu(22, 1) Ge(22, 1) D(6, 22) -> n_high=22, n_low=6
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=3: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5
+        multi-step matrices step1..15: G0(32, 32) Gu(32, 1) Ge(32, 1) D(8, 32) -> n_high=32, n_low=8
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=1: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5
+        multi-step matrices step1..15: G0(12, 12) Gu(12, 1) Ge(12, 1) D(4, 12) -> n_high=12, n_low=4
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=4: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5
+        multi-step matrices step1..15: G0(42, 42) Gu(42, 1) Ge(42, 1) D(10, 42) -> n_high=42, n_low=10
+Platoon composition: ['1C2H', '1C3H', '1C1H', '1C4H', '1C2H'], total following vehicles (excluding PV)=17, sub_start=[0, 3, 7, 9, 14]
+[sim-cap] Truncated simulation to 40.1s (334 steps)
+Vehicle parameter file: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\parameters\profile_11.csv
+Constraint bounds: Spa[10.0,80.0] Vel[0.0,35.0] Acc[-6.0,4.0] Nfut=15 sdes=40.0
+Run settings saved to 'D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\cutin\Distributed_MPC_p11_b3p5_t114_distributed\run_settings.txt'
+[cut-in] Step 114: leader position shifted backward by 17.1 m; CAV1-PV gap 25.500 m
+Evaluation metrics saved to 'D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\cutin\Distributed_MPC_p11_b3p5_t114_distributed\metrics.csv'

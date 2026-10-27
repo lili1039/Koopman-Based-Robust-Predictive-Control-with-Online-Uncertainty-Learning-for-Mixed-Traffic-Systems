@@ -248,9 +248,6 @@ if __name__ == "__main__":
 
     Tgap_this_step_list = [[] for i in range(n_cav)]
     v0_IDM_this_step_list = [[] for i in range(n_cav)]
-    cutin_time = 8.0
-    cutin_drop = 25.0
-    cutin_step = int(round(cutin_time / Tstep))
     # simulate
     for k in range(Tini, total_time_steps-1):
         step_idx = k - Tini
@@ -260,16 +257,7 @@ if __name__ == "__main__":
             # print(f"Step {i}: Tgap_this_step: {Tgap_this_step}, v0_IDM_this_step: {v0_IDM_this_step}")
 
         # Construct reference output.
-        if scenario == 'stabilization':
-            vdes = 25
-            sdes = SDES
-            for i in range(n_cav):
-                p = yini_list[i].shape[0]
-                yref = np.zeros((p,N))
-                yref[0::2,:] = sdes
-                yref[1::2,:] = vdes
-                yref_list[i] = yref.reshape(p*N, order='F')
-        elif scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
+        if scenario in ('tracking', 'braking'):
             sdes = SDES
             # Reference Koopman MPC: compute reference speed separately for each subsystem.
             # v_des_i[j] = 1/6*(PV speed[j] + CAV i-1 speed[j] + 2*CAV i current speed[j] + 2*CAV i direct-leader speed[j]).
@@ -371,9 +359,6 @@ if __name__ == "__main__":
             phi_initial_list[i] = phi_opt[i]
             theta_initial_list[i] = theta_opt[i]
 
-        if scenario == 'cutin' and (step_idx + 1) == cutin_step:
-            S_list[0][k+1, 0, 0] -= cutin_drop
-            print(f"[cut-in] Step {step_idx+1}: leader position shifted backward by {cutin_drop:.1f} m; CAV1-PV spacing dropped sharply")
     
     S_total = np.zeros((total_time_steps,n_vehicle+1,3))
     for i in range(n_cav):
@@ -409,4 +394,3 @@ if __name__ == "__main__":
     save_metrics(metrics, filename=os.path.join(output_dir, 'metrics.csv'))
 
         
-

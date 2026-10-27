@@ -103,7 +103,7 @@ cd IDM_multistep
 run_mpc.bat
 ```
 
-Comparison methods can be run from their corresponding folders under `IDM_multistep/comparison/`. For example:
+The four comparison methods support the tracking and braking scenarios. Run them from their corresponding folders under `IDM_multistep/comparison/`. For example:
 
 ```bash
 cd IDM_multistep/comparison/distributed_DeePC

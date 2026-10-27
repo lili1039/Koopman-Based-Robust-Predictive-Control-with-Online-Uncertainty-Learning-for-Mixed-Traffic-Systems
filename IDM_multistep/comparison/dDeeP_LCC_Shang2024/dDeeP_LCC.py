@@ -208,9 +208,6 @@ if __name__ == "__main__":
 
     Tgap_this_step_list = [[] for i in range(n_cav)]
     v0_IDM_this_step_list = [[] for i in range(n_cav)]
-    cutin_time = 8.0
-    cutin_drop = 25.0
-    cutin_step = int(round(cutin_time / Tstep))
 
     for k in range(Tini, total_time_steps - 1):
         step_idx = k - Tini
@@ -219,43 +216,33 @@ if __name__ == "__main__":
             v0_IDM_this_step_list[i] = v0_IDM_list[i] * (1 + v0_rate_list[i]/100)**(k+Tini)
 
         # ---- build reference output (same logic as the distributed baseline) ----
-        if scenario == 'stabilization':
-            vdes = 25
-            sdes = SDES
-            for i in range(n_cav):
-                p = yini_list[i].shape[0]
-                yref = np.zeros((p, N))
-                yref[0::2, :] = sdes
-                yref[1::2, :] = vdes
-                yref_list[i] = yref.reshape(p*N, order='F')
-        elif scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
-            sdes = SDES
-            for i in range(n_cav):
-                p = yini_list[i].shape[0]
-                v_pv = np.tile(S_list[0][k, 0, 1], N)
-                if i == 0:
-                    v_cav_prev = np.tile(S_list[0][k, 0, 1], N)
-                else:
-                    y_prev_reshaped = y_opt_list[i-1].reshape(yini_list[i-1].shape[0], N, order='F')
-                    v_cav_prev_opt = y_prev_reshaped[1, :]
-                    v_cav_prev = np.append(v_cav_prev_opt[1:], v_cav_prev_opt[-1])
+        sdes = SDES
+        for i in range(n_cav):
+            p = yini_list[i].shape[0]
+            v_pv = np.tile(S_list[0][k, 0, 1], N)
+            if i == 0:
+                v_cav_prev = np.tile(S_list[0][k, 0, 1], N)
+            else:
+                y_prev_reshaped = y_opt_list[i-1].reshape(yini_list[i-1].shape[0], N, order='F')
+                v_cav_prev_opt = y_prev_reshaped[1, :]
+                v_cav_prev = np.append(v_cav_prev_opt[1:], v_cav_prev_opt[-1])
 
-                y_curr_reshaped = y_opt_list[i].reshape(yini_list[i].shape[0], N, order='F')
-                v_cav_as_opt = y_curr_reshaped[1, :]
-                v_cav_as = np.append(v_cav_as_opt[1:], v_cav_as_opt[-1])
+            y_curr_reshaped = y_opt_list[i].reshape(yini_list[i].shape[0], N, order='F')
+            v_cav_as_opt = y_curr_reshaped[1, :]
+            v_cav_as = np.append(v_cav_as_opt[1:], v_cav_as_opt[-1])
 
-                if i == 0:
-                    v_ref = np.tile(S_list[0][k, 0, 1], N)
-                else:
-                    y_prev_reshaped = y_opt_list[i-1].reshape(yini_list[i-1].shape[0], N, order='F')
-                    v_ref_opt = y_prev_reshaped[-1, :]
-                    v_ref = np.append(v_ref_opt[1:], v_ref_opt[-1])
+            if i == 0:
+                v_ref = np.tile(S_list[0][k, 0, 1], N)
+            else:
+                y_prev_reshaped = y_opt_list[i-1].reshape(yini_list[i-1].shape[0], N, order='F')
+                v_ref_opt = y_prev_reshaped[-1, :]
+                v_ref = np.append(v_ref_opt[1:], v_ref_opt[-1])
 
-                vdes = (v_pv + v_cav_prev + 2*v_cav_as + 2*v_ref) / 6
-                yref = np.zeros((p, N))
-                yref[0::2, :] = sdes
-                yref[1::2, :] = vdes
-                yref_list[i] = yref.reshape(p*N, order='F')
+            vdes = (v_pv + v_cav_prev + 2*v_cav_as + 2*v_ref) / 6
+            yref = np.zeros((p, N))
+            yref[0::2, :] = sdes
+            yref[1::2, :] = vdes
+            yref_list[i] = yref.reshape(p*N, order='F')
 
         # ---- decentralized robust control: each subsystem solves independently ----
         start_time = time.time()
@@ -304,9 +291,6 @@ if __name__ == "__main__":
             uini_list[i] = np.append(uini_list[i][1:], u)
             yini_list[i] = np.hstack((yini_list[i][:, 1:], y.reshape(-1, 1)))
 
-        if scenario == 'cutin' and (step_idx + 1) == cutin_step:
-            S_list[0][k+1, 0, 0] -= cutin_drop
-            print(f"[cut-in] Step {step_idx+1}: leader position shifted backward by {cutin_drop:.1f} m; CAV1-PV spacing dropped sharply")
 
     S_total = np.zeros((total_time_steps, n_vehicle+1, 3))
     for i in range(n_cav):

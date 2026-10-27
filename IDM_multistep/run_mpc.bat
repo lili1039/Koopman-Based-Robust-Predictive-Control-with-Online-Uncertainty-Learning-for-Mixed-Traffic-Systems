@@ -5,12 +5,19 @@ REM  Usage: edit the settings below, save, then run this .bat.
 REM  All resolved settings are written to <result_dir>/run_settings.txt.
 REM ============================================================================
 setlocal
+REM Prevent settings from an earlier batch experiment leaking into this single run.
+for /f "tokens=1 delims==" %%V in ('set KMPC_ 2^>nul') do set "%%V="
 
-REM ---- Python interpreter (python310 conda env) ----
-set "PYTHON=C:\Users\13373\.conda\envs\python310\python.exe"
+REM Use python from the activated environment.
+set "PYTHON=python"
+"%PYTHON%" -c "import sys" >nul 2>&1
+if errorlevel 1 (
+    echo Python could not be started. Activate your project environment.
+    exit /b 1
+)
 
 REM ====================== core ======================
-REM scenario: tracking / braking / stabilization / cutin
+REM scenario: tracking / braking
 set "KMPC_SCENARIO=tracking"
 REM control method: All HDVs / Decentralized MPC / Distributed MPC
 set "KMPC_CONTROL=Distributed MPC"
@@ -35,11 +42,8 @@ REM acceleration bounds [min,max] [m/s^2]
 set "KMPC_ACC_MIN=-6"
 set "KMPC_ACC_MAX=4"
 
-REM ====================== MPC weights (tracking / braking / cutin only) ======================
+REM ====================== MPC weights (tracking / braking) ======================
 REM Decentralized MPC: Q=diag([spacing, velocity] repeated), Qa likewise.
-REM Tuned recommendation 202607 sweep: keep spa:vel=2.0:0.8, raise R from 20 to 30.
-REM Cuts startup shock and accel oscillation vs R=20 while keeping spacing regulation.
-REM See 202607_wtune/recommendation.md. Alternatives: R=20 tightest spacing, R=40 smoothest.
 set "KMPC_DEC_Q_SPA=2.5"
 set "KMPC_DEC_Q_VEL=1.5"
 set "KMPC_DEC_QA_SPA=0.0"
@@ -48,11 +52,7 @@ set "KMPC_DEC_R=20.0"
 set "KMPC_DEC_RD=30.0"
 
 REM Distributed MPC: Q1 tracks PV, Q2 tracks preceding CAV, Qa/Q3 tracks assumed own last-step traj, Q4 tracks local leader.
-REM Recommended 202607 tuning: velocity ratio PV:CAVi-1:assume:LVi = 0.05:0.05:0.5:1.0, spacing 0.125 each,
-REM together with KMPC_DIST_TERM_REFS=weighted, i.e. terminal = velocity-weighted avg of the 4 refs, consistent with cost.
-REM PV-weight Q1,Q2 is the tradeoff knob: more PV = stronger braking string-stability but looser NEDC spacing;
-REM less PV = tighter NEDC spacing but weaker braking damping. Alternatives: 0.15:0.15:0.2:1.0 for max braking robustness,
-REM or 0:0:0.5:1.0 for tightest NEDC spacing. KMPC_DIST_Q_SPA / KMPC_DIST_Q_VEL still override Q1,Q2,Q4 together.
+REM Terminal target uses the same velocity weights as these references.
 set "KMPC_DIST_Q1_SPA=0.125"
 set "KMPC_DIST_Q1_VEL=0.1"
 set "KMPC_DIST_Q2_SPA=0.125"
@@ -79,17 +79,31 @@ set "KMPC_CORR_THREADS=8"
 
 REM ====================== output / vehicle params ======================
 REM result root dir
-set "KMPC_RESULT_ROOT=202606_result"
-REM run suffix: empty => auto timestamp (to the second). custom e.g. _myrun
-set "KMPC_RUN_SUFFIX=_delayed"
+set "KMPC_RESULT_ROOT=result"
+REM Empty suffix uses the method name; existing names receive _2, _3, etc.
+set "KMPC_RUN_SUFFIX="
 REM vehicle parameter csv
 set "KMPC_VEHICLE_CSV=vehicle_parameters.csv"
 
 REM ====================== optional ======================
 REM --- signal delay (tracking + Distributed MPC) ---
-set "KMPC_SIGNAL_DELAY=1"
-set "KMPC_DELAY_STEP_WINDOWS=120-124,320-324,520-524,720-724,920-924,1120-1124,1320-1324,1520-1524,1720-1724,1920-1924"
-set "KMPC_DELAY_HDVS=2:1,4:2"
+set "KMPC_SIGNAL_DELAY=0"
+set "KMPC_DELAY_SEED=202606"
+set "KMPC_DELAY_COUNT=10"
+set "KMPC_DELAY_MIN_DURATION=3"
+set "KMPC_DELAY_MAX_DURATION=8"
+REM Empty => randomly choose from all HDVs; optional candidates use subplatoon:HDV, e.g. 2:1,4:2.
+set "KMPC_DELAY_HDVS="
+
+REM --- random CAV optimal-prediction packet loss (Distributed MPC) ---
+REM Receiver subplatoon k loses the optimal prediction sent by CAV(k-1).
+REM Empty receivers => all downstream subplatoons 2..N are candidates.
+set "KMPC_CAV_PRED_LOSS=0"
+set "KMPC_CAV_PRED_LOSS_SEED=202607"
+set "KMPC_CAV_PRED_LOSS_COUNT=10"
+set "KMPC_CAV_PRED_LOSS_MIN_DURATION=3"
+set "KMPC_CAV_PRED_LOSS_MAX_DURATION=8"
+set "KMPC_CAV_PRED_LOSS_RECEIVERS=2,3,4,5"
 
 REM --- soft-constraint (slack): enable controls optimization; save controls recording only ---
 set "KMPC_ENABLE_SLACK=0"

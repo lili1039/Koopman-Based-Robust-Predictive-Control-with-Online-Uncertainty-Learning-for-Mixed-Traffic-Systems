@@ -1,0 +1,19 @@
+timestamp: 2026-10-27 15:31:32
+scenario: tracking
+control_method: dDeeP-LCC Shang2024
+time_varying: True
+T: 500
+Tini: 50
+N: 15
+kappa: 436
+SDES(desired/equilibrium spacing): 40.0
+Spa[min,max]: [10.0, 80.0]
+Acc[min,max]: [-6.0, 4.0]
+subplatoon_config: [2, 3, 1, 4, 2]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\vehicle_parameters.csv
+data_file: precollected_data_tracking_2-3-1-4-2_idm_input_T500_N15
+robust_settings: {'disturbance_method': 'time-varying', 'Ts_down': 7, 'n_vertices': 8, 'reg_pinv': 0.0001, 'warm_start': True}
+deepc_weights: {'weight_s': 5.0, 'weight_v': 1.5, 'weight_u': 20.0, 'lambda_gi': 100, 'lambda_yi': 100000.0}
+result_root: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\comparison\dDeeP_LCC_Shang2024\result
+run_suffix: _20261027_153132
+output_dir: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\comparison\dDeeP_LCC_Shang2024\result\tracking\dDeeP_LCC_20261027_153132

@@ -1,0 +1,17 @@
+metric,value
+mode,nominal
+scenario,cutin
+completed,0
+step_seconds,0.12
+history_steps,50
+last_valid_step,143
+cutin_time_s,11.28
+SlackEnabled,0
+TimingValid,0
+failure_status,infeasible
+failure_reason,Control solve failed: infeasible
+RMSVE,5.237321769848515
+RMSSE,7.386442555020207
+CAV_spacing_violation_count,0
+CAV_velocity_violation_count,0
+slack_triggered_solves,0

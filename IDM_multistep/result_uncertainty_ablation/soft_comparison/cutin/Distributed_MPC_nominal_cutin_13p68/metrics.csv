@@ -1,0 +1,17 @@
+metric,value
+mode,nominal
+scenario,cutin
+completed,1
+step_seconds,0.12
+history_steps,50
+last_valid_step,666
+cutin_time_s,13.68
+SlackEnabled,1
+TimingValid,0
+failure_status,
+failure_reason,
+RMSVE,4.9811158319831765
+RMSSE,16.946783962022117
+CAV_spacing_violation_count,10
+CAV_velocity_violation_count,0
+slack_triggered_solves,10

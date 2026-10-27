@@ -1,0 +1,17 @@
+timestamp: 2026-10-27 15:47:57
+scenario: braking
+control_method: RNDDPC-HI
+Nfut: 5
+SDES: 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+subplatoon_config: [2, 3, 1, 4, 2]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\vehicle_parameters.csv
+time_varying: True
+weights: {'spacing': 2.5, 'velocity': 1.5, 'control': 20.0, 'delta_u_penalty': 30.0}
+koopman_lifting: {'with_history': True, 'checkpoints': ['2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5', '2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5', '2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5', '2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5', '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5']}
+constraints: {'spacing': 'hard CAV reachable-interval bounds', 'velocity': 'hard CAV reachable-interval bounds', 'terminal_velocity': 'hard equality on nominal terminal velocity; target projected when needed', 'acceleration': [-6.0, 4.0]}
+rnddpc_uncertainty: {'EPS_MAX': 0.2, 'Q_COVER': 0.1, 'residual_scale': 1.0, 'RCOND_PINV': 0.001, 'EP_EXTRAPOLATE': True, 'uncertainty_propagation': 'generator-preserving matrix zonotope', 'CONIC_SOLVER': 'CLARABEL', 'MZ_KEEP_GENERATORS': 999, 'MZ_GENERATOR_COUNTS': [{'D_mz_generators': 48, 'Zp_mz_generators': 44}, {'D_mz_generators': 68, 'Zp_mz_generators': 64}, {'D_mz_generators': 28, 'Zp_mz_generators': 24}, {'D_mz_generators': 88, 'Zp_mz_generators': 84}, {'D_mz_generators': 48, 'Zp_mz_generators': 44}]}
+data_collection: {'rollouts': 30, 'rollout_len': 120, 'noise': 0.03, 'seed': 0, 'vbase_range': [10.0, 30.0], 'head_velocity_range': [10.0, 30.0], 'head_random_walk_std': 0.8, 'cav_pe_std': 1.5, 'idm_params': 'vehicle_parameters.csv slices per subplatoon'}
+output_dir: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\comparison\RNDDPC_Li2026\results\main_results\braking

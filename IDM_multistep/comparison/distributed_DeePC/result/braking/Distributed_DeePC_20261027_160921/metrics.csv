@@ -1,0 +1,11 @@
+metric,value
+RMSVE,4.801543651354645
+RMSSE,11.748212055597152
+AvgControlTime_s,0.05332991302588361
+AvgIteration,7.087888531618435
+weight_s,5.0
+weight_v,1.5
+weight_u,20.0
+lambda_gi,100.0
+lambda_yi,100000.0
+rho,1.0

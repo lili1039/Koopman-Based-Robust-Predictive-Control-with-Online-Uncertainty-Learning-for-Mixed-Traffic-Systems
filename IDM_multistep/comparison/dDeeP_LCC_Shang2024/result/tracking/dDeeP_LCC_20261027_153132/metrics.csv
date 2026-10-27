@@ -1,0 +1,13 @@
+metric,value
+RMSVE,3.199689468414069
+RMSSE,12.06545072610177
+AvgControlTime_s,0.24621512866106585
+weight_s,5.0
+weight_v,1.5
+weight_u,20.0
+lambda_gi,100
+lambda_yi,100000.0
+disturbance_method,time-varying
+Ts_down,7
+n_vertices,8
+warm_start,True

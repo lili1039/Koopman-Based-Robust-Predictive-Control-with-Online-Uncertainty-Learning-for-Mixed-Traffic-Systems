@@ -1,0 +1,18 @@
+timestamp: 2026-10-27 15:33:51
+scenario: braking
+control_method: Decentralized single MPC
+time_varying: True
+Nfut: 15
+Npst: 50
+SDES(desired/equilibrium spacing): 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\vehicle_parameters.csv
+subplatoon_config: [2, 3, 1, 4, 2]
+enable_slack: True
+slack_weights: {'W_SLACK': 10000.0, 'W_SLACK_L2': 100.0}
+mpc_weights: {'dec_q_spa': 2.5, 'dec_q_vel': 1.5, 'dec_r': 20.0, 'dec_rd': 30.0}
+result_root: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\comparison\single_MPC\result
+run_suffix: _20261027_153351
+output_dir: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\comparison\single_MPC\result\braking\Decentralized_single_MPC_20261027_153351

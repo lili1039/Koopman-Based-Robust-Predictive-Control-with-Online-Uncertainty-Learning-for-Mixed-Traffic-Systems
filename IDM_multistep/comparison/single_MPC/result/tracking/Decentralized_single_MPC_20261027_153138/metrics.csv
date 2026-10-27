@@ -1,0 +1,10 @@
+metric,value
+RMSVE,3.0092553379956914
+RMSSE,11.177636331666045
+AvgControlTime_s,0.009245043496290843
+dec_q_spa,2.5
+dec_q_vel,1.5
+dec_r,20.0
+dec_rd,30.0
+SlackEnabled,0.0
+SlackMax,0.0

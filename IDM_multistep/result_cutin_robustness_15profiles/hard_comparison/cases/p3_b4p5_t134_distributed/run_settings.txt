@@ -1,0 +1,55 @@
+timestamp: 2026-10-27 03:24:38
+scenario: cutin
+control_method: Distributed MPC
+disturbance_estimate: True
+disturbance_update_method: refit
+time_varying: True
+Nfut: 15
+Npst: 50
+Tstep: 0.12
+SDES(desired/equilibrium spacing): 40.0
+Spa[min,max]: [10.0, 80.0]
+Vel[min,max]: [0.0, 35.0]
+Acc[min,max]: [-6.0, 4.0]
+cutin_time: 16.08
+cutin_gap_target: 25.5
+cutin_spacing_mode: fixed_after_cutin_gap
+cutin_brake_duration: 4.888888888888889
+cutin_final_speed: 4.0
+cutin_brake_acceleration: -4.5
+lam: 0.7
+N_point: 20
+corr_threads: 1
+ep_window: 20
+vehicle_csv: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\parameters\profile_3.csv
+signal_delay: False
+delay_count: 0
+delay_duration: [1, 1]
+delay_seed: 202606
+delay_hdv_candidates: 
+delay_windows: []
+cav_pred_loss: False
+cav_pred_loss_count: 0
+cav_pred_loss_duration: [1, 1]
+cav_pred_loss_seed: 202607
+cav_pred_loss_receivers: 
+cav_pred_loss_windows: []
+enable_slack: False
+save_slack: False
+slack_L1_weight: 10000.0
+slack_L2_weight: 100.0
+slack_record_tolerance: 0.001
+verbose_step: False
+save_plots: False
+mpc_weights: {'dec_q_spa': 2.5, 'dec_q_vel': 1.5, 'dec_qa_spa': 0.0, 'dec_qa_vel': 0.0, 'dec_r': 20.0, 'dec_rd': 30.0, 'dist_q1_spa': 0.125, 'dist_q1_vel': 0.1, 'dist_q2_spa': 0.125, 'dist_q2_vel': 0.1, 'dist_qa_spa': 0.125, 'dist_qa_vel': 0.5, 'dist_q4_spa': 0.125, 'dist_q4_vel': 1.0, 'dist_r': 20.0, 'dist_rd': 30.0, 'dist_term_refs': 'weighted'}
+subplatoon_config: [(2, '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5'), (3, '2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5'), (1, '2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5'), (4, '2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5'), (2, '2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5')]
+result_root: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison
+run_suffix: _p3_b4p5_t134_distributed
+output_dir: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\cutin\Distributed_MPC_p3_b4p5_t134_distributed
+uncertainty_mode: online
+freeze_step: 50
+freeze_time_s: 6.0
+added_prefix_steps: 0
+nominal_and_global_active_from_step: 0
+timing_valid: False
+coverage_evaluation: True

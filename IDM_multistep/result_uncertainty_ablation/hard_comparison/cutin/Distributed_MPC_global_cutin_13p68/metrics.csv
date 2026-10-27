@@ -1,0 +1,17 @@
+metric,value
+mode,global
+scenario,cutin
+completed,0
+step_seconds,0.12
+history_steps,50
+last_valid_step,157
+cutin_time_s,13.68
+SlackEnabled,0
+TimingValid,0
+failure_status,infeasible
+failure_reason,Optimization failed: infeasible
+RMSVE,4.099080692784019
+RMSSE,7.113098656103584
+CAV_spacing_violation_count,0
+CAV_velocity_violation_count,0
+slack_triggered_solves,0

@@ -93,23 +93,6 @@ def generate_NEDC_velocity_profile(Tstep=0.12):
 
     return time, vel
 
-def generate_sine_velocity_profile(Tstep=0.12):
-    total_time = 180     # seconds
-    time = np.arange(0, total_time, Tstep)
-    vel = np.zeros_like(time)
-
-    # Sine-wave parameters.
-    center = 25         # Center speed: 25 m/s.
-    amplitude = 3       # Oscillation range: +/-5 m/s.
-    periods = 4         # Four complete sine waves.
-    omega = 2 * np.pi * periods / total_time   # Angular frequency.
-
-    # Generate the sine curve.
-    for idx, t in enumerate(time):
-        vel[idx] = center + amplitude * np.sin(omega * t)
-
-    return time, vel
-
 def generate_braking_velocity_profile(Tstep=0.12):
     """
     Emergency braking scenario (total 30 s):
@@ -150,36 +133,6 @@ def generate_braking_velocity_profile(Tstep=0.12):
         else:
             vel[idx] = v_high
 
-    return time, vel
-
-def generate_cutin_velocity_profile(Tstep=0.12, cutin_time=8.0):
-    """
-    Cut-in scenario with the same velocity profile as Koopman_MPC_IDM_learning_set.py.
-    The position jump is injected in the main loop.
-    """
-    v_const = 20.0
-    total_time = 80.0
-    accel_dur = 3.0
-    a_accel = 2.0
-    a_brake = -5.0
-    v_low = 8.0
-
-    t_accel = cutin_time - accel_dur
-    v_peak = v_const + a_accel * accel_dur
-    t_brake = (v_peak - v_low) / (-a_brake)
-    t_brake_end = cutin_time + t_brake
-
-    time = np.arange(0, total_time, Tstep)
-    vel = np.empty_like(time)
-    for idx, t in enumerate(time):
-        if t < t_accel:
-            vel[idx] = v_const
-        elif t < cutin_time:
-            vel[idx] = v_const + a_accel * (t - t_accel)
-        elif t < t_brake_end:
-            vel[idx] = v_peak + a_brake * (t - cutin_time)
-        else:
-            vel[idx] = v_low
     return time, vel
 
 def generate_history_seq(sim_subplatoon_num,sim_num_veh,vPV_init,v_init,s_init,Tgap,v0_IDM,Tgap_rate,v0_rate,veh_len,Tstep,a_idm,b_idm,s0_idm):
@@ -260,8 +213,6 @@ def plot(scenario, S, Tstep, sim_subplatoon_num, sub_numHDV_list, out_dir='resul
                 plt.ylim(5,35)
             elif scenario == 'braking':
                 plt.ylim(0,40)
-            elif scenario == 'stabilization':
-                plt.ylim(15,35)
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(os.path.join(out_dir, f'plot_{state_name}.png'))
@@ -289,13 +240,8 @@ def predict_future_ep_and_constraints(scenario, Nfut, v_preceed_t):
     ep = np.zeros([1,Nfut+1])
     ep_aver_window = 20     # Past window length for estimating ep min/max.
 
-    if scenario == 'stabilization':
-        # Future ep is estimated as the constant equilibrium value 25.
-        ep = np.tile(25, (1, Nfut+1))
-        
-    elif scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
-        # Future ep is estimated as constant ep_t.
-        ep = np.tile(v_preceed_t, (1, Nfut+1))
+    # Future ep is estimated as constant ep_t.
+    ep = np.tile(v_preceed_t, (1, Nfut+1))
         
     return ep
 
@@ -333,7 +279,7 @@ def compute_spacing_from_position(S):
     spacing[:, 1:] = pos[:, :-1] - pos[:, 1:]
     return spacing
 
-def compute_tracking_metrics(S, scenario, sdes=40.0, vdes_stab=25.0):
+def compute_tracking_metrics(S, scenario, sdes=40.0):
     """
     Match the Koopman baseline: exclude the PV and compute RMSVE/RMSSE over the supplied time window.
     Pass S[Npst:] from the caller to evaluate only the control segment.
@@ -343,11 +289,8 @@ def compute_tracking_metrics(S, scenario, sdes=40.0, vdes_stab=25.0):
     vel_eval = vel[:, 1:]
     spacing_eval = spacing[:, 1:]
 
-    if scenario == 'stabilization':
-        vel_err = vel_eval - vdes_stab
-    else:
-        vdes = vel[:, 0]
-        vel_err = vel_eval - vdes[:, None]
+    vdes = vel[:, 0]
+    vel_err = vel_eval - vdes[:, None]
 
     rmsve = float(np.sqrt(np.mean(vel_err ** 2)))
     rmsse = float(np.sqrt(np.mean((spacing_eval - sdes) ** 2)))

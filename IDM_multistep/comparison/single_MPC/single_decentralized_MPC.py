@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-from functions import plot, save_vehicle_data_to_csv, save_computation_time, compute_tracking_metrics, save_metrics, Tstep, Npst, IDM_dynamics, compute_IDM_steady_s, generate_history_seq, predict_future_ep_and_constraints, generate_NEDC_velocity_profile, generate_sine_velocity_profile, generate_braking_velocity_profile, generate_cutin_velocity_profile
+from functions import plot, save_vehicle_data_to_csv, save_computation_time, compute_tracking_metrics, save_metrics, Tstep, Npst, IDM_dynamics, compute_IDM_steady_s, generate_history_seq, predict_future_ep_and_constraints, generate_NEDC_velocity_profile, generate_braking_velocity_profile
 # ======================================================
 #               distributed single MPC
 # ======================================================
@@ -40,7 +40,9 @@ def _env_int_list(name, default):
     return [int(item.strip()) for item in value.split(',') if item.strip()]
 
 
-scenario = os.environ.get('KMPC_SCENARIO', 'cutin')
+scenario = os.environ.get('KMPC_SCENARIO', 'tracking')
+if scenario not in ('tracking', 'braking'):
+    raise ValueError('Supported scenarios are tracking and braking.')
 num_CAV = 1
 subplatoon_spec = _env_int_list('KMPC_SUBPLATOON', [2, 3, 1, 4, 2])
 vehicle_csv = os.environ.get('KMPC_VEHICLE_CSV', 'vehicle_parameters.csv')
@@ -61,8 +63,6 @@ dec_rd = _env_float('KMPC_DEC_RD', 30.0)
 enable_slack = _env_flag('KMPC_ENABLE_SLACK', False)
 W_SLACK = _env_float('KMPC_SLACK_W', 1.0e4)
 W_SLACK_L2 = _env_float('KMPC_SLACK_W_L2', 1.0e2)
-cutin_time = 8.0
-cutin_drop = 25.0
 
 if not run_suffix.strip():
     run_suffix = '_' + time.strftime('%Y%m%d_%H%M%S')
@@ -89,15 +89,9 @@ class Decentralized_VehicleSolver:
         self.sl_vel_ub = cp.Variable((Nfut,), nonneg=True)
 
         # ===== Weights =====
-        if scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
-            Q4 = np.diag([dec_q_spa, dec_q_vel])       # ref
-            R = dec_r*np.eye(1)
-            Rd = dec_rd*np.eye(1)
-
-        elif scenario == 'stabilization':
-            Q4 = np.diag([1,2])
-            R = 12.5*np.eye(1)      # Control input.
-            Rd = 5*np.eye(1)
+        Q4 = np.diag([dec_q_spa, dec_q_vel])       # ref
+        R = dec_r*np.eye(1)
+        Rd = dec_rd*np.eye(1)
 
         # ===== Constraints and objective =====
         constraints = []
@@ -219,13 +213,8 @@ if __name__ == '__main__':
     # ============================ Initialize each vehicle ===================================================
     if scenario == 'tracking':
         time_list, PV_vel = generate_NEDC_velocity_profile(Tstep)
-    elif scenario == 'stabilization':
-        time_list, PV_vel = generate_sine_velocity_profile(Tstep)
     elif scenario == 'braking':
         time_list, PV_vel = generate_braking_velocity_profile(Tstep)
-    elif scenario == 'cutin':
-        time_list, PV_vel = generate_cutin_velocity_profile(Tstep, cutin_time=cutin_time)
-        cutin_step = int(round(cutin_time / Tstep))
 
     total_time_steps = len(time_list)
     sim_maxtime = _env_float('KMPC_SIM_MAXTIME', 0.0)
@@ -357,26 +346,16 @@ if __name__ == '__main__':
             ep = predict_future_ep_and_constraints(scenario, Nfut, S[Npst+i,lead_idx,1])
 
             # =========== Desired state.
-            if scenario == 'stabilization':
-                # The desired state in the cost is constant: both speed and spacing track predefined constants for traffic-wave stabilization.
-                vdes = 25
-                sdes = SDES
+            # Four desired states in the cost.
+            sdes = SDES
+            x_ref = np.zeros((2, Nfut+1))
 
-                x_ref = np.zeros((2, Nfut+1))
-                x_ref[0,:] = sdes
-                x_ref[1,:] = vdes
-
-            elif scenario == 'tracking' or scenario == 'braking' or scenario == 'cutin':
-                # Four desired states in the cost.
-                sdes = SDES
-                x_ref = np.zeros((2, Nfut+1))
-
-                # Set x_ref velocity to the speed sequence of the vehicle ahead of the current subplatoon CAV, taken from the previous optimal predicted sequence.
-                x_ref[0,:] = sdes
-                if platoon_idx == 0:
-                    x_ref[1,:] = ep_t
-                elif platoon_idx != 0:
-                    x_ref[1,:] = S[Npst+i,lead_idx,1]
+            # Set x_ref velocity to the speed sequence of the vehicle ahead of the current subplatoon CAV, taken from the previous optimal predicted sequence.
+            x_ref[0,:] = sdes
+            if platoon_idx == 0:
+                x_ref[1,:] = ep_t
+            elif platoon_idx != 0:
+                x_ref[1,:] = S[Npst+i,lead_idx,1]
                 
             
             # ============= Solve.
@@ -393,10 +372,6 @@ if __name__ == '__main__':
         # Update position and speed.
         S[Npst+i+1,:,0] = S[Npst+i,:,0] + Tstep * S[Npst+i,:,1]
         S[Npst+i+1,1:,1] = S[Npst+i,1:,1] + Tstep * S[Npst+i,1:,2]
-
-        if scenario == 'cutin' and (i + 1) == cutin_step:
-            S[Npst+i+1, 0, 0] -= cutin_drop
-            print(f"[cut-in] Step {i+1}: leader position shifted backward by {cutin_drop:.1f} m; CAV1-PV spacing dropped sharply")
 
     print(f"Result output directory: {output_dir}")
     plot(scenario, S, Tstep, sim_subplatoon_num, sub_numHDV, out_dir=output_dir)

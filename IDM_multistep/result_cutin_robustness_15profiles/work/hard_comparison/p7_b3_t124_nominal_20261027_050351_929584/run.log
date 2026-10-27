@@ -1,0 +1,32 @@
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+Using device: cpu
+Disturbance set / constraint tightening: ON
+Soft constraints / slack in optimization: OFF
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=2: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_29_00_39_02/past_models/model_epoch_31.weights.h5
+        multi-step matrices step1..15: G0(22, 22) Gu(22, 1) Ge(22, 1) D(6, 22) -> n_high=22, n_low=6
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=3: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_32_32/past_models/model_epoch_44.weights.h5
+        multi-step matrices step1..15: G0(32, 32) Gu(32, 1) Ge(32, 1) D(8, 32) -> n_high=32, n_low=8
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=1: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_30_51/past_models/model_epoch_34.weights.h5
+        multi-step matrices step1..15: G0(12, 12) Gu(12, 1) Ge(12, 1) D(4, 12) -> n_high=12, n_low=4
+model_collection_path:  D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/
+[load] num_HDV=4: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\Deep_Koop_v1/model_highd_multistep/2026_06_30_17_33_06/past_models/model_epoch_101.weights.h5
+        multi-step matrices step1..15: G0(42, 42) Gu(42, 1) Ge(42, 1) D(10, 42) -> n_high=42, n_low=10
+Platoon composition: ['1C2H', '1C3H', '1C1H', '1C4H', '1C2H'], total following vehicles (excluding PV)=17, sub_start=[0, 3, 7, 9, 14]
+[sim-cap] Truncated simulation to 40.1s (334 steps)
+Vehicle parameter file: D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\parameters\profile_7.csv
+Constraint bounds: Spa[10.0,80.0] Vel[0.0,35.0] Acc[-6.0,4.0] Nfut=15 sdes=40.0
+Run settings saved to 'D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\cutin\Distributed_MPC_p7_b3_t124_nominal\run_settings.txt'
+[cut-in] Step 124: leader position shifted backward by 16.3 m; CAV1-PV gap 25.500 m
+C:\Users\13373\.conda\envs\python310\lib\site-packages\cvxpy\problems\problem.py:1539: UserWarning: Solution may be inaccurate. Try another solver, adjusting the solver settings, or solve with verbose=True for more information.
+  warnings.warn(
+Set parameter LicenseID to value 2784141
+Evaluation metrics saved to 'D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\result_cutin_robustness_15profiles\hard_comparison\cutin\Distributed_MPC_p7_b3_t124_nominal\metrics.csv'
+Traceback (most recent call last):
+  File "D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\Koopman_MPC_IDM_learning_set.py", line 1612, in <module>
+    x_next, s_next, u_next, compute_time, slack_vals = sub_solver[platoon_idx].solve(s_t, x_pv, x_preceed, x_assume, x_ref, ep, Ex_interval, u_prev)
+  File "D:\0liliPersonal\Code_for_Research_2\HK-RPC_for_public\IDM_multistep\uncertainty_ablation.py", line 86, in wrapped
+    raise RuntimeError(f'Control solve failed: {status}')
+RuntimeError: Control solve failed: infeasible

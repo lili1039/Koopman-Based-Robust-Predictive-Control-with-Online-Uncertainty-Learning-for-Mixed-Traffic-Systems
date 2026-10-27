@@ -1,0 +1,28 @@
+{
+  "subsystem_sizes": [
+    2,
+    3,
+    1,
+    4,
+    2
+  ],
+  "vehicle_csv_sha256": "2763bd5d5de800e29576de092237fb7c20be1dae865cc4ed143425fd1cc17e5c",
+  "training": {
+    "rollouts": 30,
+    "transitions_per_rollout": 120,
+    "seed": 0,
+    "noise": 0.03,
+    "initial_IDM_parameters_fixed": true
+  },
+  "validation": {
+    "rollouts": 5,
+    "seed": 20261019
+  },
+  "data_sha256": {
+    "data_sub0.npz": "15ee4b6b3f31cb85ce4760cb0b6251f5543cb087989d9c2344d934afb371e8d1",
+    "data_sub1.npz": "9db353a523f8f4cd33e1ee2b1f5f01fbf7e6aedbac23ec6859201b6c35934e45",
+    "data_sub2.npz": "e43a43292d99a51d7f8b432f62f9976534f8b07df53eff226146a050b8e41920",
+    "data_sub3.npz": "781b63deb339e9c292f6dd8071b6a110667d12432e227f8159d5e518382ec5b6",
+    "data_sub4.npz": "7c7a3c0425cf40c0e8f45de65e392f1b74a0304aaae0c6baffc75c18e770177e"
+  }
+}
