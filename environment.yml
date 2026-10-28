@@ -1,0 +1,37 @@
+name: hk-rpc
+
+channels:
+  - pytorch
+  - conda-forge
+
+dependencies:
+  - python=3.10.13
+  - pip
+  - git
+
+  # CPU version; CUDA is not required.
+  - pytorch=2.3.0
+  - cpuonly
+
+  - pip:
+      # Numerical computing and data processing
+      - numpy==1.26.3
+      - pandas==2.2.1
+      - scipy==1.13.1
+
+      # Plotting
+      - matplotlib==3.8.0
+
+      # Optimization and solvers
+      - cvxpy==1.7.2
+      - osqp==0.6.7.post3
+      - clarabel==0.11.1
+      - scs==3.2.8
+      - gurobipy==13.0.1
+
+      # Zonotope operations
+      - "pyzonotope @ git+https://github.com/rssalessio/pyzonotope.git@master"
+
+      # Notebook execution
+      - ipykernel==6.29.3
+      - "jupyterlab>=4,<5"

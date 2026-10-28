@@ -4,9 +4,8 @@
   <strong>Hanli Chen, Li Dai*, Yaling Ma, Junxiao Zhao, Yuanqing Xia, Fellow, IEEE</strong>
 </p>
 
-
-> **Code availability.** This repository is an initial public snapshot. 
-> 
+> **Code availability.** This repository is an initial public snapshot.
+>
 <img src="IDM_multistep/figures%20for%20paper/mixed%20traffic%20flow.png" alt="Mixed traffic flow scenario" width="100%">
 <img src="IDM_multistep/figures%20for%20paper/network%20architecture.png" alt="Network architecture" width="100%">
 
@@ -14,21 +13,48 @@
 
 ```text
 .
-|-- Deep_Koop_v1/                # trained model checkpoints, exported weights, and training results
-|-- HighD_preprocessing/         # highD trajectory preprocessing script and instructions
-|-- HighDDatasets/               # output directory for locally generated compact highD datasets
-|-- IDM_multistep/               # HK-RPC simulation, comparison baselines, ablation studies, and results
-|-- training_code/               # proposed-model and baseline training, evaluation, and plotting
-|-- Zonosets_and_preparations/   # prediction error sets and MATLAB zonotope construction
+|-- Deep_Koop_v1/               # trained model checkpoints, exported weights, and training results
+|-- HighD_preprocessing/        # highD trajectory preprocessing script and instructions
+|-- HighDDatasets/              # output directory for locally generated compact highD datasets
+|-- IDM_multistep/              # HK-RPC simulation, comparison baselines, ablation studies, and results
+|-- training_code/              # proposed-model and baseline training, evaluation, and plotting
+|-- Zonosets_and_preparations/  # prediction error sets and MATLAB zonotope construction
 |-- .gitignore                  # version-control exclusion rules
+|-- environment.yml             # Python environment and software dependencies
 `-- readme.md
 ```
 
+## Environment Setup
+
+Install Anaconda or Miniconda, then run the following commands from the repository root to create and activate the environment:
+
+```bash
+conda env create -f environment.yml
+conda activate hk-rpc
+```
+
+Check the installed dependencies:
+
+```bash
+python -m pip check
+```
+
+Activate `hk-rpc` before running the preprocessing, training, simulation, or plotting scripts.
+
+The environment uses Python 3.10.13 and CPU-only PyTorch 2.3.0. CUDA is not required. GPU users can install the corresponding PyTorch 2.3.0 CUDA build following the [official installation instructions](https://docs.pytorch.org/get-started/previous-versions/#v230).
+
+Additional requirements:
+
+- **Gurobi license:** Gurobi is used for accelerated online optimization.
+- **MATLAB tools:** Running `Zonosets_and_preparations/_5_multi_step/enclosing_set.m` requires MATLAB, and the CORA toolbox.
 ## HighD Dataset Preprocessing
 
 1. Place the raw highD CSV files (which you must obtain from the official highD dataset provider) in `HighD_preprocessing/data/`.
+
 2. Run `python HighD_preprocessing/dataset_process_HighD.py` from the repository root.
+
 3. The script writes compact trajectory files directly to `HighDDatasets/`:
+
    - `highd_traj_<count>_1HDV_u4f.pkl`
    - `highd_traj_<count>_2HDV_u4f.pkl`
    - `highd_traj_<count>_3HDV_u4f.pkl`
@@ -40,46 +66,47 @@ The training scripts are provided under `training_code/`. For the scripts in `tr
 
 1. Train the proposed model:
 
-```bash
-cd training_code/Heter_HDV_HighD
-python _5_heter_mainfuns_highd.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
-```
+   ```bash
+   cd training_code/Heter_HDV_HighD
+   python _5_heter_mainfuns_highd.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
+   ```
 
 2. Train the single-step predictor baseline:
 
-```bash
-cd training_code/Heter_HDV_HighD
-python _2_heter_mainfuns_highd.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true --omega_penalty_on false
-```
+   ```bash
+   cd training_code/Heter_HDV_HighD
+   python _2_heter_mainfuns_highd.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true --omega_penalty_on false
+   ```
 
 3. Train the deep Koopman baseline:
 
-```bash
-cd training_code/Heter_HDV_HighD
-python _3_heter_mainfuns_highd_NoLSTM.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
-```
+   ```bash
+   cd training_code/Heter_HDV_HighD
+   python _3_heter_mainfuns_highd_NoLSTM.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
+   ```
 
 4. Train the ablation linear model:
 
-```bash
-cd training_code/Heter_HDV_HighD
-python _4_heter_mainfuns_highd_NoKoopman.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
-```
+   ```bash
+   cd training_code/Heter_HDV_HighD
+   python _4_heter_mainfuns_highd_NoKoopman.py --Nfut 15 --Npst 50 --num_HDV 2 --is_train true
+   ```
 
 5. Evaluate the IDM baseline:
+
    set `DEFAULT_NUM_HDV` in the script to change the evaluation settings before running.
 
-```bash
-cd training_code/identified_IDM
-python _1_heter_mainfuns_IDM_calibrated.py
-```
+   ```bash
+   cd training_code/identified_IDM
+   python _1_heter_mainfuns_IDM_calibrated.py
+   ```
 
 6. Train the seq2seq LSTM baseline: set `num_HDV` in `_1_heter_helperfuns_LSTM.py` to change the evaluation settings before running.
 
-```bash
-cd training_code/SeqtoSeq_LSTM
-python _1_heter_mainfuns_LSTM.py
-```
+   ```bash
+   cd training_code/SeqtoSeq_LSTM
+   python _1_heter_mainfuns_LSTM.py
+   ```
 
 ## Prediction Error Sets
 
@@ -101,43 +128,43 @@ Then run `Zonosets_and_preparations/_5_multi_step/enclosing_set.m` in MATLAB wit
 
 1. The proposed method can be run with `IDM_multistep/run_mpc.bat`. Before running it, edit `KMPC_SCENARIO` (`tracking` or `braking`) and `KMPC_CONTROL` (`All HDVs`, `Decentralized MPC`, or `Distributed MPC`) in the batch file to choose the simulation scenario and control method.
 
-```bat
-cd IDM_multistep
-run_mpc.bat
-```
+   ```bat
+   cd IDM_multistep
+   run_mpc.bat
+   ```
 
 2. Cut-in experiments are launched separately using `IDM_multistep/uncertainty_ablation.bat` for uncertainty ablation and `IDM_multistep/run_repeated_safety.bat` for repeated safety evaluation.
 
 3. The four comparison baselines support the tracking and braking scenarios. Run them from their corresponding folders under `IDM_multistep/comparison/`. For distributed DeePC, dDeeP-LCC, and single-CAV MPC, set `KMPC_SCENARIO` to `tracking` or `braking` before launching:
 
-```bat
-cd IDM_multistep/comparison/distributed_DeePC
-set "KMPC_SCENARIO=tracking"
-python distributed_DeePC.py
-```
+   ```bat
+   cd IDM_multistep/comparison/distributed_DeePC
+   set "KMPC_SCENARIO=tracking"
+   python distributed_DeePC.py
+   ```
 
-```bat
-cd IDM_multistep/comparison/dDeeP_LCC_Shang2024
-set "KMPC_SCENARIO=tracking"
-python dDeeP_LCC.py
-```
+   ```bat
+   cd IDM_multistep/comparison/dDeeP_LCC_Shang2024
+   set "KMPC_SCENARIO=tracking"
+   python dDeeP_LCC.py
+   ```
 
-```bat
-cd IDM_multistep/comparison/single_MPC
-set "KMPC_SCENARIO=tracking"
-python single_decentralized_MPC.py
-```
+   ```bat
+   cd IDM_multistep/comparison/single_MPC
+   set "KMPC_SCENARIO=tracking"
+   python single_decentralized_MPC.py
+   ```
 
-Replace `tracking` with `braking` in the commands above to run the braking scenario.
+   Replace `tracking` with `braking` in the commands above to run the braking scenario.
 
-For RNDDPC-HI, the batch file runs tracking followed by braking by default:
+   For RNDDPC-HI, the batch file runs tracking followed by braking by default:
 
-```bat
-cd IDM_multistep/comparison/RNDDPC_Li2026
-run_rnddpc.bat
-```
+   ```bat
+   cd IDM_multistep/comparison/RNDDPC_Li2026
+   run_rnddpc.bat
+   ```
 
-To run only one scenario, use `run_rnddpc.bat --scenario tracking` or `run_rnddpc.bat --scenario braking`.
+   To run only one scenario, use `run_rnddpc.bat --scenario tracking` or `run_rnddpc.bat --scenario braking`.
 
 ## Plotting
 
@@ -148,7 +175,7 @@ cd training_code
 python plot_model_comparison_nfut.py --traj 0 --t0 51
 ```
 
- By default, figures are saved to `training_code/comparison_figures/` as:
+By default, figures are saved to `training_code/comparison_figures/` as:
 
 - `pred_compare_nfut_traj<traj>_t0<t0>_H<Nfut>.pdf`
 - `pred_compare_nfut_traj<traj>_t0<t0>_H<Nfut>_v2.pdf`
