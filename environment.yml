@@ -1,19 +1,20 @@
 name: hk-rpc
 
 channels:
-  - pytorch
+  - defaults
   - conda-forge
 
 dependencies:
   - python=3.10.13
   - pip
-  - git
 
   # CPU version; CUDA is not required.
-  - pytorch=2.3.0
-  - cpuonly
+  - pytorch=2.3.0=cpu*
 
   - pip:
+      # PyTorch filesystem dependency
+      - fsspec==2025.9.0
+
       # Numerical computing and data processing
       - numpy==1.26.3
       - pandas==2.2.1
@@ -30,7 +31,7 @@ dependencies:
       - gurobipy==13.0.1
 
       # Zonotope operations
-      - "pyzonotope @ git+https://github.com/rssalessio/pyzonotope.git@master"
+      - "pyzonotope @ https://github.com/rssalessio/pyzonotope/archive/refs/heads/master.zip"
 
       # Notebook execution
       - ipykernel==6.29.3
